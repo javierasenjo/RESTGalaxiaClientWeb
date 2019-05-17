@@ -5,10 +5,6 @@
         <servlet-class>principal.CrearGalaxia</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>ObtenerGalaxia</servlet-name>
-        <servlet-class>principal.ObtenerGalaxia</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>AnnadirPlaneta</servlet-name>
         <servlet-class>principal.AnnadirPlaneta</servlet-class>
     </servlet>
@@ -21,20 +17,32 @@
         <servlet-class>principal.ObtenerPlaneta</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>ObtenerPlanetaMostrar</servlet-name>
-        <servlet-class>principal.ObtenerPlanetaMostrar</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>ValidarGalaxia</servlet-name>
         <servlet-class>principal.ValidarGalaxia</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Login</servlet-name>
+        <servlet-class>principal.Login</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>Registrarse</servlet-name>
+        <servlet-class>principal.Registrarse</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>BorrarPlaneta</servlet-name>
+        <servlet-class>principal.BorrarPlaneta</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ModificarPlaneta</servlet-name>
+        <servlet-class>principal.ModificarPlaneta</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ExplorarGalaxia</servlet-name>
+        <servlet-class>principal.ExplorarGalaxia</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>CrearGalaxia</servlet-name>
         <url-pattern>/CrearGalaxia</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ObtenerGalaxia</servlet-name>
-        <url-pattern>/ObtenerGalaxia</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>AnnadirPlaneta</servlet-name>
@@ -49,12 +57,28 @@
         <url-pattern>/ObtenerPlaneta</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>ObtenerPlanetaMostrar</servlet-name>
-        <url-pattern>/ObtenerPlanetaMostrar</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>ValidarGalaxia</servlet-name>
         <url-pattern>/ValidarGalaxia</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Login</servlet-name>
+        <url-pattern>/Login</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Registrarse</servlet-name>
+        <url-pattern>/Registrarse</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BorrarPlaneta</servlet-name>
+        <url-pattern>/BorrarPlaneta</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ModificarPlaneta</servlet-name>
+        <url-pattern>/ModificarPlaneta</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ExplorarGalaxia</servlet-name>
+        <url-pattern>/ExplorarGalaxia</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

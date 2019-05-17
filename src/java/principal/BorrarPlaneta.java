@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author javie
  */
-public class ObtenerPlaneta extends HttpServlet {
+public class BorrarPlaneta extends HttpServlet {
 
     String token = "";
 
@@ -35,12 +35,11 @@ public class ObtenerPlaneta extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        Planeta planeta = null;
         try {
-            ServiciosGalaxia serviciosGalaxia = new ServiciosGalaxia();
             token = (String) getServletContext().getAttribute("token");
             Comprobaciones comprobaciones = new Comprobaciones();
 
+            ServiciosGalaxia serviciosGalaxia = new ServiciosGalaxia();
             if (token == null || !comprobaciones.comprobarToken(token)) {
                 RequestDispatcher rd = getServletContext().getRequestDispatcher("/noToken.html");
                 rd.forward(request, response);
@@ -52,24 +51,11 @@ public class ObtenerPlaneta extends HttpServlet {
             }
             String numPlanetaBeta = request.getParameter("numeroPlaneta");
 
-            planeta = serviciosGalaxia.getPlaneta(Planeta.class, numPlanetaBeta, token);
+            Galaxia galaxiaNueva = serviciosGalaxia.deletePlaneta(Galaxia.class, numPlanetaBeta, token);
 
-            PrintWriter out = response.getWriter();
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet Obtener Planeta</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h3>El planeta " + planeta.getNombre() + " contiene la siguiente información</h3>");
-            out.println("<ul>");
-            out.println("<li>Radio del planeta: " + planeta.getRadio() + "</li>");
-            out.println("<li>Edad del planeta: " + planeta.getEdad()+ "</li>");
-            out.println("</ul>");
-            out.println("<a href=\"http://localhost:8080/RESTGalaxiaClientWeb/ExplorarGalaxia\">Volver a explorar la galaxia</a>");
-            out.println("</body>");
-            out.println("</html>");
+            RequestDispatcher rd = getServletContext().getNamedDispatcher("ExplorarGalaxia");
+            rd.forward(request, response);
+
 
         } catch (Exception ex) {
             RequestDispatcher rd = getServletContext().getRequestDispatcher("/noPlaneta.html");

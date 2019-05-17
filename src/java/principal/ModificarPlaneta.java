@@ -6,6 +6,7 @@
 package principal;
 
 import Pojo.Galaxia;
+import Pojo.Planeta;
 import RestServices.ServiciosGalaxia;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -19,7 +20,9 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author javie
  */
-public class ObtenerGalaxia extends HttpServlet {
+public class ModificarPlaneta extends HttpServlet {
+
+    String token = "";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,30 +35,42 @@ public class ObtenerGalaxia extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        Planeta planeta = null;
         try {
-           ServiciosGalaxia serviciosGalaxia = new ServiciosGalaxia();
-           Galaxia galaxia = serviciosGalaxia.getGalaxia(Galaxia.class);
+            token = (String) getServletContext().getAttribute("token");
+            Comprobaciones comprobaciones = new Comprobaciones();
 
-            PrintWriter out = response.getWriter();
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet CrearGalaxia</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h3>Te han devuelto la siguiente galaxia: " + galaxia.getNombre() + "</h3>");
-            out.println("<a href=\"http://localhost:8080/RESTGalaxiaClientWeb/index.html\">Volver al índice</a>");
-            out.println("</body>");
-            out.println("</html>");
+            ServiciosGalaxia serviciosGalaxia = new ServiciosGalaxia();
+            if (token == null || !comprobaciones.comprobarToken(token)) {
+                RequestDispatcher rd = getServletContext().getRequestDispatcher("/noToken.html");
+                rd.forward(request, response);
+            }
+            Galaxia galaxia = serviciosGalaxia.getGalaxia(Galaxia.class, token);
+            if (comprobaciones.comprobarGalaxia(galaxia) == false) {
+                RequestDispatcher rd = getServletContext().getRequestDispatcher("/noGalaxia.html");
+                rd.forward(request, response);
+            }
+            String numPlanetaBeta = request.getParameter("numeroPlaneta");
+            String nombrePlaneta = request.getParameter("nombrePlaneta");
+            String edadPlanetaBeta = request.getParameter("edadPlaneta");
+            String radioPlanetaBeta = request.getParameter("radioPlaneta");
+            int edadPlaneta = Integer.parseInt(edadPlanetaBeta);
+            double radioPlaneta = Double.parseDouble(radioPlanetaBeta);
+            
+            planeta = new Planeta(nombrePlaneta, edadPlaneta, radioPlaneta);
+
+            Planeta planetaNuevo = serviciosGalaxia.putPlaneta(planeta, Planeta.class, numPlanetaBeta, token);
+
+            RequestDispatcher rd = getServletContext().getNamedDispatcher("ExplorarGalaxia");
+            rd.forward(request, response);
 
         } catch (Exception ex) {
-            RequestDispatcher rd = getServletContext().getRequestDispatcher("/noGalaxia.html");
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/noPlaneta.html");
             rd.forward(request, response);
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *

@@ -9,15 +9,19 @@ import Pojo.Galaxia;
 import RestServices.ServiciosGalaxia;
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 /**
  *
  * @author javie
  */
 public class CrearGalaxia extends HttpServlet {
+
+    String token = "";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -30,12 +34,20 @@ public class CrearGalaxia extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        token = (String) getServletContext().getAttribute("token");
+
+        Comprobaciones comprobaciones = new Comprobaciones();
+
+        ServiciosGalaxia serviciosGalaxia = new ServiciosGalaxia();
+            if (token == null || !comprobaciones.comprobarToken(token)) {
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/noToken.html");
+            rd.forward(request, response);
+        }
 
         String nombreGalaxia = request.getParameter("nombreGalaxia");
-        ServiciosGalaxia serviciosGalaxia = new ServiciosGalaxia();
         Galaxia galaxia = new Galaxia();
         galaxia.setNombre(nombreGalaxia);
-        String respuesta = serviciosGalaxia.postGalaxia(galaxia);
+        Galaxia galaxiaNueva = serviciosGalaxia.postGalaxia(galaxia, Galaxia.class, token);
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
@@ -44,7 +56,7 @@ public class CrearGalaxia extends HttpServlet {
             out.println("<title>Servlet CrearGalaxia</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h3>"+ respuesta +"</h3>");
+            out.println("<h3> Se ha creado la galaxia " + galaxiaNueva.getNombre() + "</h3>");
             out.println("<a href=\"http://localhost:8080/RESTGalaxiaClientWeb/index.html\">Volver al índice</a>");
             out.println("</body>");
             out.println("</html>");

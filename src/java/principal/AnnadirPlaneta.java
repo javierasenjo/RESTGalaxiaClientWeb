@@ -22,6 +22,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class AnnadirPlaneta extends HttpServlet {
 
+    String token = "";
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -35,9 +37,17 @@ public class AnnadirPlaneta extends HttpServlet {
             throws ServletException, IOException {
 
         try {
+            token = (String) getServletContext().getAttribute("token");
+
+            Comprobaciones comprobaciones = new Comprobaciones();
+
             ServiciosGalaxia serviciosGalaxia = new ServiciosGalaxia();
-            Galaxia galaxia = serviciosGalaxia.getGalaxia(Galaxia.class);
-            if (galaxia.getNombre() == null) {
+            if (token == null || !comprobaciones.comprobarToken(token)) {
+                RequestDispatcher rd = getServletContext().getRequestDispatcher("/noToken.html");
+                rd.forward(request, response);
+            }
+            Galaxia galaxia = serviciosGalaxia.getGalaxia(Galaxia.class, token);
+            if (comprobaciones.comprobarGalaxia(galaxia) == false) {
                 RequestDispatcher rd = getServletContext().getRequestDispatcher("/noGalaxia.html");
                 rd.forward(request, response);
             }
@@ -52,19 +62,9 @@ public class AnnadirPlaneta extends HttpServlet {
             planeta.setEdad(edadPlaneta);
             planeta.setRadio(radioPlaneta);
 
-            String respuesta = serviciosGalaxia.postPlaneta(planeta);
-            PrintWriter out = response.getWriter();
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet Añadir Planeta</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h3>Has creado el planeta: " + planeta.getNombre() + "</h3>");
-            out.println("<a href=\"http://localhost:8080/RESTGalaxiaClientWeb/index.html\">Volver al índice</a>");
-            out.println("</body>");
-            out.println("</html>");
+            Planeta planetaNuevo = serviciosGalaxia.postPlaneta(planeta, Planeta.class, token);
+            RequestDispatcher rd = getServletContext().getNamedDispatcher("ExplorarGalaxia");
+            rd.forward(request, response);
         } catch (Exception ex) {
             RequestDispatcher rd = getServletContext().getRequestDispatcher("/noGalaxia.html");
             rd.forward(request, response);

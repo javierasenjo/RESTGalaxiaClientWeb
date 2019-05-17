@@ -5,9 +5,8 @@
  */
 package principal;
 
-import Pojo.Galaxia;
-import Pojo.ListaPlanetas;
-import RestServices.ServiciosGalaxia;
+import Pojo.Usuario;
+import RestServices.ServiciosLogin;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.RequestDispatcher;
@@ -20,10 +19,9 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author javie
  */
-public class MostrarGalaxia extends HttpServlet {
+public class Login extends HttpServlet {
 
-    String token = "";
-
+    String token;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,41 +34,24 @@ public class MostrarGalaxia extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String nombre = request.getParameter("nombreUsuario");
+        String password = request.getParameter("passwordUsuario");
 
-        try {
-            ServiciosGalaxia serviciosGalaxia = new ServiciosGalaxia();
-            token = (String) getServletContext().getAttribute("token");
-            Comprobaciones comprobaciones = new Comprobaciones();
+        ServiciosLogin serviciosLogin = new ServiciosLogin();
+        Usuario usuario = new Usuario();
+        usuario.setNombre(nombre);
+        usuario.setPassword(password);
+        token = serviciosLogin.loginear(usuario);
 
-            if (token == null || !comprobaciones.comprobarToken(token)) {
-                RequestDispatcher rd = getServletContext().getRequestDispatcher("/noToken.html");
-                rd.forward(request, response);
-            }
-            Galaxia galaxia = serviciosGalaxia.getGalaxia(Galaxia.class, token);
-            if (comprobaciones.comprobarGalaxia(galaxia) == false) {
-                RequestDispatcher rd = getServletContext().getRequestDispatcher("/noGalaxia.html");
-                rd.forward(request, response);
-            }
-            String respond = serviciosGalaxia.getPlanetasTexto(token);
-            PrintWriter out = response.getWriter();
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet CrearGalaxia</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h3>La galaxia contiene la siguiente información</h3>");
-            out.println(respond);
-            out.println("<br><a href=\"http://localhost:8080/RESTGalaxiaClientWeb/index.html\">Volver al índice</a>");
-            out.println("</body>");
-            out.println("</html>");
-        } catch (Exception ex) {
-            System.out.println(ex);
-            RequestDispatcher rd = getServletContext().getRequestDispatcher("/noGalaxia.html");
+        if (token.equals("")) {
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/noToken.html");
+            rd.forward(request, response);
+        } else {
+            request.getSession().getServletContext().setAttribute("token", token);
+            System.out.println("token guardado " + getServletContext().getAttribute("token"));
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/index.html");
             rd.forward(request, response);
         }
-
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

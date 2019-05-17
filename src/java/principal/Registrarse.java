@@ -5,11 +5,10 @@
  */
 package principal;
 
-import Pojo.Planeta;
-import RestServices.ServiciosGalaxia;
+import Pojo.Usuario;
+import RestServices.ServiciosRegistrarse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +18,9 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author javie
  */
-public class ObtenerPlanetaMostrar extends HttpServlet {
+public class Registrarse extends HttpServlet {
+
+    ServiciosRegistrarse serviciosRegistrarse = new ServiciosRegistrarse();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,34 +33,28 @@ public class ObtenerPlanetaMostrar extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        Planeta planeta = null;
-        try {
-            String numPlanetaBeta = request.getParameter("numPlaneta");
-            int numPlaneta = Integer.parseInt(numPlanetaBeta);
-            ServiciosGalaxia serviciosGalaxia = new ServiciosGalaxia();
-
-            planeta = serviciosGalaxia.getPlaneta(Planeta.class, numPlanetaBeta);
-
-            PrintWriter out = response.getWriter();
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet Obtener Planeta Mostrar</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h3>Te han enviado el planeta: " + planeta.getNombre() + "</h3>");
-            out.println("<a href=\"http://localhost:8080/RESTGalaxiaClientWeb/index.html\">Volver al índice</a>");
-            out.println("</body>");
-            out.println("</html>");
-
-        } catch (Exception ex) {
-            RequestDispatcher rd = getServletContext().getRequestDispatcher("/noPlaneta.html");
-            rd.forward(request, response);
-        }
+        String nombre = request.getParameter("nombreUsuario");
+        String password = request.getParameter("passwordUsuario");
+        Usuario usuario = new Usuario();
+        usuario.setNombre(nombre);
+        usuario.setPassword(password);
+        String respond = serviciosRegistrarse.signup(usuario);
+                
+        PrintWriter out = response.getWriter();
+        /* TODO output your page here. You may use following sample code. */
+        out.println("<!DOCTYPE html>");
+        out.println("<html>");
+        out.println("<head>");
+        out.println("<title>Servlet Registrarse</title>");
+        out.println("</head>");
+        out.println("<body>");
+        out.println("<h3>" + respond + "</h3>");
+        out.println("<a href=\"http://localhost:8080/RESTGalaxiaClientWeb/index.html\">Volver al índice</a>");
+        out.println("</body>");
+        out.println("</html>");
     }
 
-// <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
