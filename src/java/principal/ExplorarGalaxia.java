@@ -35,10 +35,10 @@ public class ExplorarGalaxia extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        response.setHeader("Refresh", "10");
         try {
             token = (String) request.getServletContext().getAttribute("token");
-            System.out.println("tokeeen" + token);
+            //System.out.println("tokeeen" + token);
             response.setContentType("text/html;charset=UTF-8");
 
             ServiciosGalaxia serviciosGalaxia = new ServiciosGalaxia();
@@ -47,7 +47,7 @@ public class ExplorarGalaxia extends HttpServlet {
             if (token == null || !comprobaciones.comprobarToken(token)) {
                 RequestDispatcher rd = getServletContext().getRequestDispatcher("/noToken.html");
                 rd.forward(request, response);
-                response.sendError(400, "The specified passenger does not exist.");
+                return;
             }
             Galaxia galaxia = null;
             galaxia = serviciosGalaxia.getGalaxia(Galaxia.class, token);
@@ -110,7 +110,8 @@ public class ExplorarGalaxia extends HttpServlet {
                         + "<td colspan=\"4\" style=\"text-align:center;\"><input type=\"submit\" value=\"Borrar planeta\" style=\"width:100%\"/> </td></form> ");
                 out.println("</tr>");
                 out.println("</table>");
-                out.println("<a href=\"http://localhost:8080/RESTGalaxiaClientWeb/index.html\">Volver al índice</a>");
+                out.println("<br><a href=\"http://localhost:8080/RESTGalaxiaClientWeb/index.html\">Volver al índice</a>");
+                out.println("<br>Esta página se actualiza automáticamente cada 10 segundos, por favor tenga cuidado.");
                 out.println("</body>");
                 out.println("</html>");
             } catch (Exception ex) {
